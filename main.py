@@ -15,7 +15,7 @@ def game(num, list):
                 print(f"Suspect {suspect.susNum} {suspect.name}")    
         if userInp == "c":
             for suspect in list:
-                print(f"{suspect.crime}")    
+                print(f"{suspect.crime}\n")    
 
 
 

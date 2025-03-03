@@ -1,4 +1,4 @@
-from pydantic imprort BaseModel
+from pydantic import BaseModel
 
 class Suspect(BaseModel):
     name: str
@@ -8,3 +8,6 @@ class Suspect(BaseModel):
     reward: int
     aliases: str
     fieldOffice: str
+
+    def __repr__(self):
+        return f"{self.name}"

@@ -6,6 +6,21 @@ from io import BytesIO
 from Models import Suspect
 import random
 
+def game(num, list):
+    while True:
+        userInp = input(f"Current Points|{num}| Enter [S]uspects [I]nspect [C]rimes [Q]uit or [M]ake a guess:\n")
+        userInp = userInp.lower()
+        if userInp == "s":
+            for suspect in list:
+                print(f"Suspect {suspect.susNum} {suspect.name}")    
+        if userInp == "c":
+            for suspect in list:
+                print(f"{suspect.crime}")    
+
+
+
+suspectNum=1
+points = 10
 fbi_url = "https://api.fbi.gov/wanted/v1/list"
 num = random.randint(2,48)
 suspects = []
@@ -31,17 +46,17 @@ for item in data['items']:
             try:
                 suspect = Suspect(
                     name=item.get("title", "Unknown"),
-                    crime=item.get("caution", "No description available"),
+                    crime=item.get("description", "No description available"),
                     sex = item.get("sex") if item.get("sex") is not None else "Unknown",
                     age=item.get("age_max") or item.get("age_min") or -1, 
                     reward=item.get("reward_max", 0),
                     aliases=", ".join(item.get("aliases", []) or []),  
-                    fieldOffice=", ".join(item.get("field_offices", []) or []))
+                    fieldOffice=", ".join(item.get("field_offices", []) or []),
+                    susNum=suspectNum)
                 suspects.append(suspect)
+                suspectNum = suspectNum+1
                 
             except ValidationError as err:
                 print(err)
 
-for suspect in suspects:
-    print(suspect)
-    print("\n\n\n")
+game(points, suspects)

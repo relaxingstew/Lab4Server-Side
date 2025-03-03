@@ -8,6 +8,7 @@ class Suspect(BaseModel):
     reward: int
     aliases: str
     fieldOffice: str
-
+    susNum: int
+    
     def __repr__(self):
         return f"{self.name}"

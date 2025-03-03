@@ -4,9 +4,10 @@ import json
 from PIL import Image
 from io import BytesIO
 import Models
+import random
 
 fbi_url = "https://api.fbi.gov/wanted/v1/list"
-num = input("Enter a number for which page to search on the API: ")
+num = random.randint(2,48)
 
 response = requests.get(fbi_url, params={
     'page': num,

@@ -15,7 +15,28 @@ def game(num, list):
                 print(f"Suspect {suspect.susNum} {suspect.name}")    
         if userInp == "c":
             for suspect in list:
-                print(f"{suspect.crime}\n")    
+                print(f"{suspect.crime}\n")
+        elif userInp == "i":
+            try:
+                suspect_num = int(input("Enter Suspect Number to inspect: "))
+                selected_suspect = next((s for s in suspects if s.susNum == suspect_num), None)
+
+                if not selected_suspect:
+                    print("Invalid suspect number!")
+                    continue
+
+                try:
+                    response = requests.get(selected_suspect.image)
+                    response.raise_for_status()  # Raises an error for bad responses (404, 403, etc.)
+                    img = Image.open(BytesIO(response.content))
+                    img.show()
+                except requests.exceptions.RequestException as e:
+                    print(f"Failed to load image: {e}")
+            except ValueError:
+                print("Invalid input! Enter a number.")
+
+
+            
 
 
 
@@ -44,6 +65,10 @@ for item in data['items']:
     if 'caution' in item and item['caution'] and 'subjects' in item:
         if not any(sub in excluded_subjects for sub in item['subjects']):
             try:
+                image_url = "No image available"
+                if "images" in item and isinstance(item["images"], list) and len(item["images"]) > 0:
+                    image_url = item["images"][0].get("original", "No image available")
+    
                 suspect = Suspect(
                     name=item.get("title", "Unknown"),
                     crime=item.get("description", "No description available"),
@@ -52,10 +77,12 @@ for item in data['items']:
                     reward=item.get("reward_max", 0),
                     aliases=", ".join(item.get("aliases", []) or []),  
                     fieldOffice=", ".join(item.get("field_offices", []) or []),
-                    susNum=suspectNum)
+                    susNum=suspectNum,
+                    image=image_url)
+
                 suspects.append(suspect)
                 suspectNum = suspectNum+1
-                
+                                
             except ValidationError as err:
                 print(err)
 

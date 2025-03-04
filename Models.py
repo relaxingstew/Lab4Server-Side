@@ -9,6 +9,7 @@ class Suspect(BaseModel):
     aliases: str
     fieldOffice: str
     susNum: int
+    image:str
     
     def __repr__(self):
         return f"{self.name}"

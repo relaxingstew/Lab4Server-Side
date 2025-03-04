@@ -1,40 +1,42 @@
 import requests
 from pydantic import ValidationError
 import json
-from PIL import Image
-from io import BytesIO
-from Models import Suspect
+from Models import Suspect, Crime
 import random
+import re
+def regCrimes(crim):
+    semi =crim.split(';', 3)
+    if len(semi) >= 3:
+        return ';'.join(semi[:3])
+    else:
+        return crim
 
-def game(num, list):
+def crimMenu(crim):
+    while true:
+        for crime in crim:
+            print(f"{crime.crime}")
+def susMenu():
+    print("")
+def matchMenu():
+    print("")
+def game(num, sus, crim):
     while True:
         userInp = input(f"Current Points|{num}| Enter [S]uspects [I]nspect [C]rimes [Q]uit or [M]ake a guess:\n")
         userInp = userInp.lower()
         if userInp == "s":
-            for suspect in list:
+            for suspect in sus:
                 print(f"Suspect {suspect.susNum} {suspect.name}")    
         if userInp == "c":
-            for suspect in list:
-                print(f"{suspect.crime}\n")
-        elif userInp == "i":
-            try:
-                suspect_num = int(input("Enter Suspect Number to inspect: "))
-                selected_suspect = next((s for s in suspects if s.susNum == suspect_num), None)
-
-                if not selected_suspect:
-                    print("Invalid suspect number!")
-                    continue
-
-                try:
-                    response = requests.get(selected_suspect.image)
-                    response.raise_for_status()  # Raises an error for bad responses (404, 403, etc.)
-                    img = Image.open(BytesIO(response.content))
-                    img.show()
-                except requests.exceptions.RequestException as e:
-                    print(f"Failed to load image: {e}")
-            except ValueError:
-                print("Invalid input! Enter a number.")
-
+            num2 = 1
+            for crime in crim:
+                print(f"{num2}. - {regCrimes(crime.crime)}  \n")
+                num2=num2+1
+        if userInp == "i":
+            for suspect in sus:
+                inp = input("Enter [S]uspects or [C]rimes")
+                inp = inp.lower()
+           ##     if in
+        
 
             
 
@@ -45,6 +47,7 @@ points = 10
 fbi_url = "https://api.fbi.gov/wanted/v1/list"
 num = random.randint(2,48)
 suspects = []
+crimes = []
 
 response = requests.get(fbi_url, params={
     'page': num,
@@ -79,11 +82,23 @@ for item in data['items']:
                     fieldOffice=", ".join(item.get("field_offices", []) or []),
                     susNum=suspectNum,
                     image=image_url)
-
+                crime = Crime(
+                    crime = suspect.crime,
+                    crimNum = 0,
+                    susNum = suspect.susNum,
+                    suspect = suspect
+                )
+                crimes.append(crime)
                 suspects.append(suspect)
                 suspectNum = suspectNum+1
                                 
             except ValidationError as err:
                 print(err)
 
-game(points, suspects)
+temp = 1
+random.shuffle(crimes)
+for crime in crimes:
+    crime.crimNum = temp
+    temp = temp+1
+    
+game(points, suspects, crimes)

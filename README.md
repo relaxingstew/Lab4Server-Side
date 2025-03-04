@@ -1,6 +1,9 @@
 ** Notes
 API link: https://www.fbi.gov/wanted/api
-
+** IDEAS FOR SPENDING POINTS
+- mugshot
+- see unknown crime
+- display all attributes
 
 ** Examples
 

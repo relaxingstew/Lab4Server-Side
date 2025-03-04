@@ -4,40 +4,70 @@ import json
 from Models import Suspect, Crime
 import random
 import re
+
 def regCrimes(crim):
-    semi =crim.split(';', 3)
-    if len(semi) >= 3:
-        return ';'.join(semi[:3])
+    semi =crim.split(';', 2)
+    if len(semi) >= 2:
+        return ';'.join(semi[:2])
     else:
         return crim
 
 def crimMenu(crim):
-    while true:
-        for crime in crim:
-            print(f"{crime.crime}")
-def susMenu():
-    print("")
+   print("")
+def susMenu(sus):
+    for suspect in sus:
+        print(f"{suspect.susNum} {suspect.name}")
+    usrInp = input("Enter a suspect number: ")
+    
 def matchMenu():
     print("")
+
 def game(num, sus, crim):
-    while True:
+    while num > 0:
         userInp = input(f"Current Points|{num}| Enter [S]uspects [I]nspect [C]rimes [Q]uit or [M]ake a guess:\n")
         userInp = userInp.lower()
         if userInp == "s":
             for suspect in sus:
                 print(f"Suspect {suspect.susNum} {suspect.name}")    
         if userInp == "c":
-            num2 = 1
             for crime in crim:
-                print(f"{num2}. - {regCrimes(crime.crime)}  \n")
-                num2=num2+1
+                print(f"{crime.crimNum}. - {regCrimes(crime.crime)}")
         if userInp == "i":
             for suspect in sus:
                 inp = input("Enter [S]uspects or [C]rimes")
                 inp = inp.lower()
-           ##     if in
-        
+                if inp == "s":
+                    for suspect in sus:
+                        print(f"Suspect {suspect.susNum} {suspect.name}")
+                elif input == "c":
+                    for crime in crim:
+                        print(f"{crime.crimNum}. - {regCrimes(crime.crime)}")
+        if userInp == "m":
+            susGuess = None
+            crimGuess = None
+            for suspect in sus:
+                print(f"Suspect {suspect.susNum} {suspect.name}")
+            susGuess = int(input("Enter Suspect Number: "))
+            suss = None
+            for suspect in sus:
+                if susGuess == suspect.susNum:
+                    suss = suspect
+            for crime in crim:
+                print(f"{crime.crimNum}. - {regCrimes(crime.crime)}")
+            crimGuess = int(input("Enter Crime Number: "))
+            crimm = None
+            for crime in crim:
+                if crimGuess == crime.crimNum:
+                    crimm = crime
 
+            if crimm.susNum == suss.susNum:
+                print("correct")
+                num = num + 3
+                sus.remove(suss)
+                crim.remove(crimm)
+            else:
+                print("incorrect")
+                num = num - 1 
             
 
 
@@ -100,5 +130,6 @@ random.shuffle(crimes)
 for crime in crimes:
     crime.crimNum = temp
     temp = temp+1
-    
+sorted(crimes, key=lambda x: x.crimNum, reverse=True)
+
 game(points, suspects, crimes)

@@ -19,7 +19,8 @@ class Crime(BaseModel):
     susNum:int
     crime: str
     crimNum:int = None
-
+    isExtended:bool
+    
     class Config:
         arbitrary_types_allowed = True
         
